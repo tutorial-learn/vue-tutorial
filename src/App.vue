@@ -1,20 +1,51 @@
+<template>
+  <todo-form @x-add="addTodo" />
+
+  <ul>
+    <li v-for="todo in todoList" :key="todo.id">
+      <span>{{ todo.text }}</span>
+      <button type="button" @click="removeTodo(todo.id)">❌</button>
+    </li>
+  </ul>
+</template>
+
 <script lang="ts">
-import HelloWorld from "./components/HelloWorld.vue";
+import { v4 as uuidV4 } from "uuid";
+
+import TodoForm from "./components/TodoForm.vue";
+
+interface IState {
+  todoList: { id: string; text: string }[];
+}
 
 export default {
   components: {
-    HelloWorld,
+    "todo-form": TodoForm,
   },
-  data() {
+  data(): IState {
     return {
-      msg: "hello world",
+      todoList: [],
     };
+  },
+  methods: {
+    addTodo(newText: string) {
+      this.todoList.push({ id: uuidV4(), text: newText });
+    },
+    removeTodo(id: string) {
+      this.todoList = this.todoList.filter((todo) => todo.id !== id);
+    },
   },
 };
 </script>
 
-<template>
-  <HelloWorld :msg="msg" />
-</template>
+<style scoped>
+ul {
+  margin-top: 20px;
+}
 
-<style scoped></style>
+li {
+  display: flex;
+  gap: 10px;
+  margin: 5px 0;
+}
+</style>
